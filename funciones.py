@@ -42,7 +42,7 @@ class Funciones:
         self.arrayOperandos.append(op)
 
     def isOperando(self, ch):
-        if ch.isalnum() or ch == "ɛ" or ch == '"' or ch == "'":
+        if ch != '+' and ch != '-':
             return True
         return False
 
@@ -56,6 +56,7 @@ class Funciones:
 
     def infixToPostfix(self, exp):
         exp = exp.replace(" ", "")
+
         for i in exp:
             if self.isOperando(i):
                 self.concatenado = str(self.concatenado+i)
@@ -74,8 +75,8 @@ class Funciones:
                     self.outputPostfix.append(self.concatenado)
                     self.concatenado = ''
                 while((not self.isEmpty()) and self.peekTopOfStack() != '('):
-                    a = self.pop()  # hacemos pop
-                    self.outputPostfix.append(a)  # agregamos al outputPostfix
+                    a = self.pop()
+                    self.outputPostfix.append(a)
                     if len(a) == 0:
                         print("No hay signo de cerrado de paréntesis")
                         return -1
@@ -103,7 +104,7 @@ class Funciones:
     def operatePostFix(self, expresion):
         expresion = expresion.replace("'", "")
         expresion = expresion.replace('"', "")
-        print("expresion: " + expresion)
+        # print("expresion: " + expresion)
         arrayLocal = expresion.split()
         print(arrayLocal)
         for i in arrayLocal:
@@ -121,15 +122,34 @@ class Funciones:
                     resultado = val1 | val2
                 elif(i == "-"):
                     resultado = val2 - val1
+                # val2 = self.pop2()
+                # val1 = self.pop2()
+
+                # if(i == "+"):
+                #     resultado = val1 + val2
+                # elif(i == "-"):
+                #     for i in val1:
+                #         resultado += i
+                #     for i in val2:
+                #         resultado += i
+                #         if i in resultado:
+                #             resultado = resultado.replace(i, "")
 
                 self.push2(resultado)
 
         operacion = self.pop2()
-        cadena = ""
-        for i in operacion:
-            cadena += i
+        # operacion = list(dict.fromkeys(operacion))
+        # cadena = ""
+        # for i in operacion:
+        #     if i == chr(92):
+        #         cadena += i
+        #     elif i not in cadena :
+        #         cadena += i
 
-        return str(cadena)
+        # cadena = ''.join(sorted(cadena))
+
+        # print(cadena)
+        return str(operacion)
 
 
 # Probamos la funcionalidad
