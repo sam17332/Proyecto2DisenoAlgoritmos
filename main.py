@@ -4,6 +4,7 @@
 
 import pprint
 from funciones import *
+from tipoChar import *
 
 class Main:
     def __init__(self, nombreArchivo):
@@ -13,11 +14,31 @@ class Main:
 
     def main(self):
         pp = pprint.PrettyPrinter()
+
         self.lectura()
 
-        self.sustituirOperarCharacters()
+        diccionarioCHR = self.json["CHARACTERS"]
+        for char in self.characters:
+            valor = diccionarioCHR[char]
 
-        # self.construccionTokens()
+            if(isinstance(valor, str)):
+                funciones = Funciones()
+                valor = funciones.getStringInQuotes(valor)
+                if(valor[0] == "{" and valor[len(valor)-1] == "}"):
+                    if("{" not in valor[1:len(valor)-1]):
+                        valor = valor.replace("{", "")
+
+                    if("}" not in valor[0:len(valor)-2]):
+                        valor = valor.replace("}", "")
+                    # if(valor[1] == chr(92)):
+                    #     valor = valor[2:len(valor)-1]
+                    # else:
+                    #     valor = valor[0:len(valor)-1]
+                valor = set(valor)
+                diccionarioCHR[char] = valor
+
+        self.construccionTokens()
+
         # pp.pprint(self.json)
         print(self.json)
 
@@ -25,7 +46,8 @@ class Main:
         char = False
         key = False
         tokens = False
-        archivo = open(self.nombreArchivo, "r+")
+        path = str("cocols/" + self.nombreArchivo)
+        archivo = open(path, "r+")
         contador = 1
         for linea in archivo.readlines():
             linea = linea.replace("\n", "")
@@ -60,44 +82,51 @@ class Main:
                 tokens = False
 
             if(char):
-                arrayChar = linea.split(" = ")
+                arrayChar = linea.split("=")
                 if(len(arrayChar) >1):
                     diccionarioChar = self.json["CHARACTERS"]
                     resultado = arrayChar[1]
-                    var = str(arrayChar[0].replace(" ", ""))
-                    self.characters.append(str(var))
+                    key = str(arrayChar[0].replace(" ", ""))
+                    self.characters.append(str(key))
                     if(resultado[len(resultado)-1] == "."):
                         resultado = resultado[0:len(resultado)-1]
 
-                    # if("CHR(" in resultado):
-                        # resultadoTemp = resultado.replace(" ", "")
-                        # resultado = self.obtenerCHR(resultado)
+                    funciones = Funciones()
+                    # Mandar a ordenar independientemente si hay un + o - en la linea
+                    resultado = funciones.infixToPostfix(resultado)
 
-                    diccionarioChar[var] = resultado
+                    # Se itera en los characters que ya existen
+                    for character in self.characters:
+                        # Si es character esta en la linea se sustituye
+                        if(character in resultado):
+                            resultado = resultado.replace(character, diccionarioChar[character])
 
-                    # resultado = resultado.replace(" ", "")
-                    # resString = ""
-                    # resTotal = ""
-                    # esString = False
-                    # for char in resultado:
-                    #     if(char != " "):
-                    #         if(esString):
-                    #             if(char != '"' and char != "'"):
-                    #                 resString += char
-                    #         else:
-                    #             if(char != '"' and char != "'"):
-                    #                 resTotal += char
+                    if('ANY' in resultado):
+                        setChars = str(set(chr(char) for char in range (0, 255)))
+                        setChars = setChars.replace(" ", "")
+                        resultado = resultado.replace("ANY", setChars)
 
-                    #         if(char == '"' or char == "'"):
-                    #             if(esString):
-                    #                 esString = False
-                    #                 resString = set(resString)
-                    #                 resTotal += str(resString)
-                    #             else:
-                    #                 esString = True
-                    # print(var)
-                    # print(resTotal)
-                    # diccionarioChar[var] = resTotal
+                    # Si hay un CHR
+                    if("CHR(" in resultado):
+                        funciones = Funciones()
+                        # verificar si hay + o - y sustituir CHR
+                        if("+" in resultado or "-" in resultado):
+                            resultado = self.obtenerCHR(resultado)
+                            resultado = funciones.operatePostFix(resultado)
+                        else:
+                            resultado = self.obtenerCHR(resultado)
+
+                    # Si tiene .. pero no tiene CHR
+                    if(".." in resultado):
+                        resultado = self.obtenerRangoLetras(resultado)
+                        # print(resultado)
+
+                    # Si tiene + o -
+                    elif("+" in resultado or "-" in resultado):
+                        funciones = Funciones()
+                        resultado = funciones.operatePostFix(resultado)
+
+                    diccionarioChar[key] = resultado
 
             elif(key):
                 arrayKey = linea.split("=")
@@ -108,6 +137,7 @@ class Main:
                     diccionarioKey[var] = str(resultado)
 
             elif(tokens):
+                linea = linea.replace(" ", "")
                 arrayToken = linea.split("=")
                 if(len(arrayToken) >1):
                     diccionarioToken = self.json["TOKENS"]
@@ -122,13 +152,28 @@ class Main:
 
         archivo.close()
 
+    def obtenerRangoLetras(self, linea):
+        arrayLinea = linea.split("..")
+        nuevaLinea = ""
+        arrayIntegers = []
+        for letra in arrayLinea:
+            for char in letra:
+                if(char.isalpha()):
+                    arrayIntegers.append(ord(char))
+                    break
+
+        for char in range(arrayIntegers[0], arrayIntegers[1]+1):
+            nuevaLinea += chr(char)
+
+        return nuevaLinea
+
     def obtenerCHR(self, linea):
         arrayLinea = linea.split(" ")
         arrayPuntos = []
         arrayCHR = []
         nuevaLinea = ""
-        lastVal = 0
         i = 0
+
         if(".." in arrayLinea):
             for pos in arrayLinea:
                 if(".." in pos):
@@ -141,58 +186,40 @@ class Main:
                     val1 = val1.replace(")", "")
                     val2 = arrayLinea[i+1].replace("CHR(", "")
                     val2 = val2.replace(")", "")
-                    lastVal = i+1
                     setChars = str(set(chr(char) for char in range (int(val1), int(val2))))
-                    nuevaLinea += setChars
-            for i in range(lastVal+1, len(arrayLinea)):
-                nuevaLinea += arrayLinea[i]
-            # print(nuevaLinea)
-        elif("CHR(" in arrayLinea):
+                    setChars = setChars.replace(" ", "")
+                    sustituto = "CHR(" + str(val1) + ")" + " .. " + "CHR(" + str(val2) + ")"
+                    nuevaLinea = linea.replace(sustituto, setChars)
+        else:
             for pos in arrayLinea:
                 if("CHR(" in pos):
                     arrayCHR.append(i)
                 i += 1
             for i in arrayCHR:
                 if("CHR(" in arrayLinea[i]):
-                    val1 = arrayLinea[i-1].replace("CHR(", "")
+                    val1 = arrayLinea[i].replace("CHR(", "")
                     val1 = val1.replace(")", "")
-                    setChars = str(set(chr(val1)))
-                    nuevaLinea += setChars
+                    setChars = str(set(chr(int(val1))))
+                    setChars = setChars.replace(" ", "")
+                    sustituto = "CHR(" + str(val1) + ")"
+                    nuevaLinea = linea.replace(sustituto, setChars)
 
+        while "CHR(" in nuevaLinea:
+            if("CHR(" in nuevaLinea):
+                pos1 = nuevaLinea.find("CHR(")
+                subStr = nuevaLinea[pos1:len(nuevaLinea)]
+                pos2 = subStr.find(")")
+                val1 = subStr[4:pos2]
+                setChars = str(set(chr(int(val1))))
+                setChars = setChars.replace(" ", "")
+                sustituto = "CHR(" + str(val1) + ")"
+                nuevaLinea = nuevaLinea.replace(sustituto, setChars)
 
         return nuevaLinea
 
-    def sustituirOperarCharacters(self):
-        diccioChar = self.json["CHARACTERS"]
-        for character in self.characters:
-            for key in diccioChar:
-                definicion = diccioChar[key]
-                if(character in definicion):
-                    # definicion = set(definicion.replace(character, diccioChar[character]))
-                    definicion = definicion.replace(character, diccioChar[character])
-                    diccioChar[key] = str(definicion)
-
-        # for key in diccioChar:
-        #     definicion = diccioChar[key]
-        #     # if("ANY" in definicion):
-        #     #     diccioChar[key] = definicion.replace("ANY", str(set(chr(char) for char in range (0, 255))))
-
-        #     nuevaDefinicion = ""
-        #     if("+" in definicion or "-"in definicion and "CHR" not in definicion):
-        #         funciones = Funciones()
-        #         nuevaDefinicion = funciones.infixToPostfix(definicion)
-        #         nuevaDefinicion = funciones.operatePostFix(nuevaDefinicion)
-        #         diccioChar[key] = nuevaDefinicion
-
-            # print(character)
-            # definicion = diccioChar[character]
-            # print(definicion)
-            # if(character in definicion):
-            #     print(definicion)
-            #     print()
-
     def defMultiLinea(self, numeroLinea):
-        archivo = open(self.nombreArchivo, "r")
+        path = str("cocols/" + self.nombreArchivo)
+        archivo = open(path, "r")
         contador = 1
         resultadoToken = ""
         multiLinea = False
@@ -217,6 +244,15 @@ class Main:
 
         return resultadoToken
 
+    def leerString(self, expresion, diccionario, contador):
+        for char in expresion:
+            tipoChar = TipoChar()
+            tipoChar.setTipo("STRING")
+            tipoChar.setValor(ord(char))
+            diccionario[contador] = tipoChar
+            contador += 1
+
+        return diccionario, contador
 
     def construccionTokens(self):
         diccionarioToken = self.json["TOKENS"]
@@ -224,122 +260,123 @@ class Main:
         esString1 = False
         esString2 = False
         for key in diccionarioToken:
-            array = []
-            definicionFinal = ""
             definicion = diccionarioToken[key]
             keyInterno = ""
+            cont = 0
+            nuevoDiccionarioToken = {}
+            stringConcat = ""
+            if(key == "whitetoken"):
+                print("whitetoken")
             for char in definicion:
                 if(char != " "):
                     keyInterno += char
-                    # if(str(keyInterno) in self.characters):
-                    #     valor = diccionarioCharacters[keyInterno]
-                    #     array.append(valor)
-                    #     keyInterno = ""
-                    # elif(char == '"' and esString2 == False):
-                    #     keyInterno = ""
-                    #     if(esString1 == True):
-                    #         esString1 = False
-                    #         array.append("FIN-STRING")
-                    #     else:
-                    #         array.append("STRING")
-                    #         esString1 = True
-                    # elif(char == "'" and esString1 == False):
-                    #     keyInterno = ""
-                    #     if(esString2 == True):
-                    #         esString2 = False
-                    #         array.append("FIN-CHAR")
-                    #     else:
-                    #         array.append("CHAR")
-                    #         esString2 = True
-                    # elif(esString1 or esString2):
-                    #     keyInterno = ""
-                    #     array.append('"' + char + '"')
-                    # elif(char == "{"):
-                    #     array.append('KLEENE')
-                    #     keyInterno = ""
-                    # elif(char == "}"):
-                    #     array.append("FIN-KLEENE")
-                    #     keyInterno = ""
-                    # elif(char == "("):
-                    #     array.append("PARENTECIS")
-                    #     keyInterno = ""
-                    # elif(char == ")"):
-                    #     array.append("FIN-PARENTECIS")
-                    #     keyInterno = ""
-                    # elif(char == "["):
-                    #     array.append("UNARIO")
-                    #     keyInterno = ""
-                    # elif(char == "]"):
-                    #     array.append("FIN-UNARIO")
-                    #     keyInterno = ""
-                    # elif(char == "|"):
-                    #     array.append("OR")
-                    #     keyInterno = ""
-
                     if(str(keyInterno) in self.characters):
-                        valor = diccionarioCharacters[keyInterno]
-                        definicionFinal += valor
+                        tipoChar = TipoChar()
+                        tipoChar.setTipo("character")
+                        # print("!!!!!!!!")
+                        # print(diccionarioCharacters[keyInterno])
+                        # print(type(diccionarioCharacters[keyInterno]))
+                        # print("!!!!!!!!")
+                        tipoChar.setValor(diccionarioCharacters[keyInterno])
+                        nuevoDiccionarioToken[cont] = tipoChar
+                        cont += 1
                         keyInterno = ""
                     elif(char == '"' and esString2 == False):
                         keyInterno = ""
                         if(esString1 == True):
+                            nuevoDiccionarioToken, cont = self.leerString(stringConcat, nuevoDiccionarioToken, cont)
+                            cont += 1
+                            stringConcat = ""
                             esString1 = False
-                            # definicionFinal += "FIN-STRING "
                         else:
-                            # definicionFinal += "STRING "
                             esString1 = True
                     elif(char == "'" and esString1 == False):
                         keyInterno = ""
                         if(esString2 == True):
+                            nuevoDiccionarioToken, cont = self.leerString(stringConcat, nuevoDiccionarioToken, cont)
+                            cont += 1
+                            stringConcat = ""
                             esString2 = False
-                            # definicionFinal += "FIN-CHAR "
                         else:
-                            # definicionFinal += "CHAR "
                             esString2 = True
                     elif(esString1 or esString2):
                         keyInterno = ""
-                        definicionFinal += "'" + char + "'"
+                        stringConcat += char
                     elif(char == "{"):
-                        definicionFinal += "("
+                        tipoChar = TipoChar()
+                        tipoChar.setTipo("PARENTESIS_INICIAL")
+                        tipoChar.setValor(ord(char))
+                        nuevoDiccionarioToken[cont] = tipoChar
+                        cont += 1
                         keyInterno = ""
                     elif(char == "}"):
-                        definicionFinal += ")*"
+                        tipoChar = TipoChar()
+                        tipoChar.setTipo("PARENTESIS_FINAL")
+                        tipoChar.setValor(ord(char))
+                        nuevoDiccionarioToken[cont] = tipoChar
+                        cont += 1
+                        tipoChar = TipoChar()
+                        tipoChar.setTipo("KLEENE")
+                        tipoChar.setValor(ord(char))
+                        nuevoDiccionarioToken[cont] = tipoChar
+                        cont += 1
                         keyInterno = ""
                     elif(char == "("):
-                        definicionFinal += "("
+                        tipoChar = TipoChar()
+                        tipoChar.setTipo("PARENTESIS_INICIAL")
+                        tipoChar.setValor(ord(char))
+                        nuevoDiccionarioToken[cont] = tipoChar
+                        cont += 1
                         keyInterno = ""
                     elif(char == ")"):
-                        definicionFinal += ")"
+                        tipoChar = TipoChar()
+                        tipoChar.setTipo("PARENTESIS_FINAL")
+                        tipoChar.setValor(ord(char))
+                        nuevoDiccionarioToken[cont] = tipoChar
+                        cont += 1
                         keyInterno = ""
                     elif(char == "["):
-                        definicionFinal += "("
+                        tipoChar = TipoChar()
+                        tipoChar.setTipo("PARENTESIS_INICIAL")
+                        tipoChar.setValor(ord(char))
+                        nuevoDiccionarioToken[cont] = tipoChar
+                        cont += 1
                         keyInterno = ""
                     elif(char == "]"):
-                        definicionFinal += ")?"
+                        tipoChar = TipoChar()
+                        tipoChar.setTipo("PARENTESIS_FINAL")
+                        tipoChar.setValor(ord(char))
+                        nuevoDiccionarioToken[cont] = tipoChar
+                        cont += 1
+                        tipoChar = TipoChar()
+                        tipoChar.setTipo("UNIARIO")
+                        tipoChar.setValor(ord(char))
+                        nuevoDiccionarioToken[cont] = tipoChar
+                        cont += 1
                         keyInterno = ""
                     elif(char == "|"):
-                        definicionFinal += "|"
+                        tipoChar = TipoChar()
+                        tipoChar.setTipo("OR")
+                        tipoChar.setValor(ord(char))
+                        nuevoDiccionarioToken[cont] = tipoChar
+                        cont += 1
                         keyInterno = ""
-            # diccionarioToken[key] = array
-            diccionarioToken[key] = definicionFinal
+            diccionarioToken[key] = nuevoDiccionarioToken
+            print(key)
+            for id, tipo in nuevoDiccionarioToken.items():
+                print(id)
+                print(tipo.getTipoChar())
+                print(type(tipo.getValor()))
+            print()
+            print()
+        print(diccionarioToken)
+
 
 def menu():
-    # print("Ingrese el nombre del archivo que desea leer")
-    # nombre = str(input())
-    nombre = "cocol3.cfg"
+    # nombre = str(input("Ingrese el nombre del archivo que desea leer"))
+    nombre = "HexNumber.ATG"
 
     main = Main(nombre)
     main.main()
 
-
-
 menu()
-
-
-
-
-
-
-
-
-

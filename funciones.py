@@ -99,67 +99,72 @@ class Funciones:
                 exit(-1)
             self.outputPostfix.append(caracter)
 
-        return " ".join(self.outputPostfix)
+        resultado = " ".join(self.outputPostfix)
+
+        if("..CHR(" in resultado):
+            resultado = resultado.replace("..CHR(", " .. CHR(")
+
+        return resultado
 
     def operatePostFix(self, expresion):
-        expresion = expresion.replace("'", "")
-        expresion = expresion.replace('"', "")
-        # print("expresion: " + expresion)
         arrayLocal = expresion.split()
-        print(arrayLocal)
+
         for i in arrayLocal:
             resultado = ""
-            array = []
+            strLocal = ""
             if(self.isOperando(i)):
                 for j in i:
-                    array.append(str(j))
-                self.push2(array)
+                    strLocal += j
+                self.push2(strLocal)
             else:
-                val1 = set(self.pop2())
-                val2 = set(self.pop2())
+                val1 = self.getStringInQuotes(self.pop2())
+                val2 = self.getStringInQuotes(self.pop2())
+
+                val1 = set(val1)
+                val2 = set(val2)
 
                 if(i == "+"):
                     resultado = val1 | val2
                 elif(i == "-"):
                     resultado = val2 - val1
-                # val2 = self.pop2()
-                # val1 = self.pop2()
-
-                # if(i == "+"):
-                #     resultado = val1 + val2
-                # elif(i == "-"):
-                #     for i in val1:
-                #         resultado += i
-                #     for i in val2:
-                #         resultado += i
-                #         if i in resultado:
-                #             resultado = resultado.replace(i, "")
 
                 self.push2(resultado)
 
         operacion = self.pop2()
-        # operacion = list(dict.fromkeys(operacion))
-        # cadena = ""
-        # for i in operacion:
-        #     if i == chr(92):
-        #         cadena += i
-        #     elif i not in cadena :
-        #         cadena += i
 
-        # cadena = ''.join(sorted(cadena))
+        return operacion
 
-        # print(cadena)
-        return str(operacion)
+    def getStringInQuotes(self, exp):
+        contSimples = 0
+        contDobles = 0
+        for i in exp:
+            if(i == "'"):
+                contSimples += 1
+            elif(i == '"'):
+                contDobles += 1
 
+        if(contDobles >= 2 and contSimples < 2):
+            exp = exp.replace('"', "")
+        elif(contSimples >= 2 and contDobles < 2):
+            exp = exp.replace("'", '')
 
-# Probamos la funcionalidad
-# expresion = input('Ingresa una expresión:  ')
-# expresion = expresion.replace(' ', '')
-# obj = Funciones()
-# postFixValue = obj.infixToPostfix(expresion)
-# #print(postFixValue)
-# strconv = postFixValue.split(' ')
-# #print(strconv)
-# resultado = obj.operatePostFix(strconv)
-# print(f'El resultado es: {resultado}')
+        return exp
 
+    def getIfString(self, exp):
+        contSimples = 0
+        contDobles = 0
+        isString = False
+
+        if(isinstance(exp, str)):
+            for i in exp:
+                if(i == "'"):
+                    contSimples += 1
+                elif(i == '"'):
+                    contDobles += 1
+
+            if(contDobles == 2 and contSimples <= 1):
+                isString = True
+            elif(contSimples == 2 and contDobles <= 1):
+                isString = True
+
+        return isString
