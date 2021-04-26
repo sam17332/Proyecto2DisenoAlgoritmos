@@ -2,6 +2,7 @@ class TipoChar:
     def __init__(self):
         self.tipo = ""
         self.valor = ""
+        self.character = ""
 
     def getTipo(self):
         return self.tipo
@@ -15,5 +16,11 @@ class TipoChar:
     def setValor(self, valor):
         self.valor = valor
 
+    def getCharacter(self):
+        return self.character
+
+    def setCharacter(self, character):
+        self.character = character
+
     def getTipoChar(self):
-        return [self.tipo, self.valor]
+        return [self.tipo, self.valor, self.character]
