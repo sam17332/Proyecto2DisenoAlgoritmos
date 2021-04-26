@@ -107,7 +107,7 @@ class Funciones:
         return resultado
 
     def operatePostFix(self, expresion):
-        arrayLocal = expresion.split()
+        arrayLocal = expresion.split(" ")
 
         for i in arrayLocal:
             resultado = ""
