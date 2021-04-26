@@ -1,10 +1,10 @@
-COMPILER Double    
-	
+COMPILER Double
+
 (.
 			/*--------------Scanner Especification----------*/
 .)
 
-CHARACTERS 
+CHARACTERS
 
 digit = "0123456789" .
 tab = CHR(9).

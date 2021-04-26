@@ -1,8 +1,8 @@
-COMPILER Aritmetica    
+COMPILER Aritmetica
 
-CHARACTERS 
+CHARACTERS
 
-letter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz". 
+letter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".
 digit = "0123456789" .
 tab = CHR(9).
 eol = CHR(10).
