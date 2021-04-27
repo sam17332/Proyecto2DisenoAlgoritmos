@@ -36,7 +36,7 @@ class Main:
         self.construccionTokens()
 
         # self.print.pprint(self.json)
-        # print(self.json)
+        print(self.json)
 
     def lectura(self):
         char = False
@@ -493,14 +493,14 @@ class Main:
             nuevoDiccionarioToken[cont] = tipoChar
             cont += 1
             diccionarioToken[key] = nuevoDiccionarioToken
-            print(key)
-            for id, tipo in nuevoDiccionarioToken.items():
-                print(id)
-                print(tipo.getTipoChar())
-                print(type(tipo.getValor()))
-            print()
-            print()
-        print(diccionarioToken)
+        #     print(key)
+        #     for id, tipo in nuevoDiccionarioToken.items():
+        #         print(id)
+        #         print(tipo.getTipoChar())
+        #         print(type(tipo.getValor()))
+        #     print()
+        #     print()
+        # print(diccionarioToken)
 
 
 def menu():
