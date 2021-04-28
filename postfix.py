@@ -1,8 +1,10 @@
+from tipoChar import *
+
 class Postfix:
     def __init__(self):
-        self.precedencia = {'|': 1,'.': 2, '*': 3}  # Diccionario de precedencia
+        self.precedencia = {'OR': 1,'APPEND': 2, 'KLEENE': 3}  # Diccionario de precedencia
         self.top = -1 # Contador
-        self.operadores = ["|", ".", "*", "(", ")"]  # Diccionario operadores
+        self.operadores = ["OR", "APPEND", "KLEENE", "PARENTESIS_INICIAL", "PARENTESIS_FINAL"]  # Diccionario operadores
         self.opeArr = [] # Array usado como pila
         self.pstFx = [] # Array donde se van concatenando
         self.concat = '' # String donde se va concatenando
@@ -11,8 +13,8 @@ class Postfix:
         return True if self.top == -1 else False
 
     # Funcion para verificar si el caracter es un operador
-    def isOperador(self, char):
-        if char == '|' or char == '.' or char == '*':
+    def isOperador(self, ope):
+        if ope.getTipo() == 'OR' or ope.getTipo() == 'APPEND' or ope.getTipo() == 'KLEENE':
             return True
         return False
 
@@ -22,18 +24,9 @@ class Postfix:
         self.opeArr.append(op)
 
     # Funcion para verificar que el caracter no sea un operador
-    def notOperador(self, ope):
-        valido=False
-        for i in self.operadores:
-            if(ope == i):
-                valido = False
-                break
-            else:
-                valido = True
-
-        if valido:
+    def notOperador(self, char):
+        if char.getTipo() == 'CHARACTER' or char.getTipo() == 'EPSILON' or char.getTipo() == 'ACEP' or char.getTipo() == 'STRING':
             return True
-
         return False
 
     # Retorna el valor de hasta arriba de la pila
@@ -50,8 +43,8 @@ class Postfix:
 
      # Funcion para obtener que caracter tiene mas precedencia
     def masPrecedencia(self, i):
-        a = self.precedencia[i]
-        b = self.precedencia[self.stack()]
+        a = self.precedencia[i.getTipo()]
+        b = self.precedencia[self.stack().getTipo()]
 
         return True if a <= b else False
 
@@ -59,34 +52,30 @@ class Postfix:
     def toPostfix(self, exp):
         # Iteramos la exprecion
         for i in exp:
-            # Si i es un operador
-            if self.isOperador(i):
-                if(self.concat != ''):
-                    self.pstFx.append(self.concat)
-                    self.concat = ''
-                while len(self.opeArr) > 0 and self.opeArr[-1] != '(' and self.masPrecedencia(i):
+            if self.notOperador(i):
+                self.pstFx.append(i)
+            elif self.isOperador(i):
+                while len(self.opeArr) > 0 and self.opeArr[-1].getTipo() != 'PARENTESIS_INICIAL' and self.masPrecedencia(i):
                     top = self.pop()
                     self.pstFx.append(top)
                 self.push(i)
-            # Si i no es un operador
-            elif self.notOperador(i):
-                self.concat = self.concat+i
-            # Si i es un "("
-            elif i == '(':
+            elif i.getTipo() == 'PARENTESIS_INICIAL':
                 self.push(i)
             # Si i es un ")"
-            elif i == ')':
+            elif i.getTipo() == 'PARENTESIS_FINAL':
                 if(self.concat != ''):
                     self.pstFx.append(self.concat)
                     self.concat = ''
                 # Mientras no esté vacío y sea diferente a "("
-                while((not self.vacio()) and self.stack() != '('):
+                while((not self.vacio()) and self.stack().getTipo() != 'PARENTESIS_INICIAL'):
                     a = self.pop()
                     self.pstFx.append(a)
-                    if len(a) == 0:
+                    if(a == ""):
                         print("No hay signo de cerrado de paréntesis")
+
+                        return -1
                 # Si no está vacío y es diferente a "("
-                if (not self.vacio() and self.stack() != '('):
+                if (not self.vacio() and self.stack().getTipo() != 'PARENTESIS_INICIAL'):
                     return -1
                 else:
                     self.pop()
@@ -99,8 +88,8 @@ class Postfix:
 
         while len(self.opeArr):
             caracter = self.pop()
-            if caracter == "(":
+            if caracter == "PARENTESIS_INICIAL":
                 print("Hace falta un ')'")
             self.pstFx.append(caracter)
 
-        return "".join(self.pstFx)
+        return self.pstFx
