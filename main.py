@@ -5,6 +5,8 @@
 import pprint
 from funciones import *
 from tipoChar import *
+from postfix import *
+from directo import *
 
 class Main:
     def __init__(self, nombreArchivo):
@@ -14,8 +16,15 @@ class Main:
         self.print = pprint.PrettyPrinter()
 
     def main(self):
-
         self.lectura()
+        # print("chr(39) " + str(chr(39)))
+        # print("chr(47) " + str(chr(47)))
+        # print("chr(67) " + str(chr(67)))
+        # print("chr(72) " + str(chr(72)))
+        # print("chr(82) " + str(chr(82)))
+        # print("chr(41) " + str(chr(41)))
+        # print("chr(40) " + str(chr(40)))
+        # print("chr(46) " + str(chr(46)))
 
         diccionarioCHR = self.json["CHARACTERS"]
         for char in self.characters:
@@ -36,7 +45,38 @@ class Main:
         self.construccionTokens()
 
         # self.print.pprint(self.json)
-        print(self.json)
+        # print(self.json)
+
+        tokensLen = len(self.json["TOKENS"])
+
+        # Se crea un array con todos los tokens
+        arrayAcumuladoTokens = []
+        cont = 0
+        for key1, definicion in self.json["TOKENS"].items():
+            cont += 1
+            for key2, valor in definicion.items():
+                arrayAcumuladoTokens.append(valor)
+            if(cont < tokensLen):
+                tipoChar = TipoChar()
+                tipoChar.setTipo("OR")
+                tipoChar.setValor(ord("|"))
+                arrayAcumuladoTokens.append(tipoChar)
+
+        postfixInst = Postfix()
+        postfix = postfixInst.toPostfix(arrayAcumuladoTokens)
+        cont = 0
+        # for token in postfix:
+        #     print(cont)
+        #     print(token.getTipoChar())
+        #     print(type(token.getValor()))
+        #     print()
+        #     cont +=1
+        # print()
+
+        directoInst = Directo(postfix)
+        directoInst.arbolDirecto()
+
+
 
     def lectura(self):
         char = False
@@ -259,6 +299,8 @@ class Main:
         for char in expresion:
             tipoChar = TipoChar()
             tipoChar.setTipo("STRING")
+            valor = {ord(char)}
+            tipoChar.setCharacter(valor)
             tipoChar.setValor(ord(char))
             diccionario[contador] = tipoChar
             contador += 1
@@ -300,7 +342,7 @@ class Main:
                     keyInterno += char
                     if(str(keyInterno) in self.characters):
                         tipoChar = TipoChar()
-                        tipoChar.setTipo("character")
+                        tipoChar.setTipo("CHARACTER")
                         setChar = diccionarioCharacters[keyInterno]
                         if(isinstance(diccionarioCharacters[keyInterno], set)):
                             setChar = set(ord(str(char)) for char in diccionarioCharacters[keyInterno])
@@ -446,6 +488,9 @@ class Main:
                         cont += 1
                         tipoChar = TipoChar()
                         tipoChar.setTipo("EPSILON")
+                        valor = {ord("ɛ")}
+                        tipoChar.setCharacter(valor)
+                        # tipoChar.setCharacter(set(str(ord("ɛ"))))
                         tipoChar.setValor(ord("ɛ"))
                         nuevoDiccionarioToken[cont] = tipoChar
                         cont += 1
@@ -484,6 +529,7 @@ class Main:
             cont += 1
             tipoChar = TipoChar()
             tipoChar.setTipo("ACEP")
+            tipoChar.setCharacter(key)
             tipoChar.setValor(ord("#"))
             nuevoDiccionarioToken[cont] = tipoChar
             cont += 1
@@ -493,20 +539,23 @@ class Main:
             nuevoDiccionarioToken[cont] = tipoChar
             cont += 1
             diccionarioToken[key] = nuevoDiccionarioToken
-        #     print(key)
-        #     for id, tipo in nuevoDiccionarioToken.items():
-        #         print(id)
-        #         print(tipo.getTipoChar())
-        #         print(type(tipo.getValor()))
-        #     print()
-        #     print()
+            # print(key)
+            # for id, tipo in nuevoDiccionarioToken.items():
+            #     print(id)
+            #     print(tipo.getTipoChar())
+            #     print(type(tipo.getValor()))
+            # print()
+            # print()
         # print(diccionarioToken)
 
 
 def menu():
     # nombre = str(input("Ingrese el nombre del archivo que desea leer"))
     # nombre = "HexNumber.ATG"
-    nombre = "cocol2.cfg"
+    # nombre = "Aritmetica.ATG"
+    nombre = "CoCoL.ATG"
+    # nombre = "Double.ATG"
+    # nombre = "cocol2.cfg"
 
     main = Main(nombre)
     main.main()
