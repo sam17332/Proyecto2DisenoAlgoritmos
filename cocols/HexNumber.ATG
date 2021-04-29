@@ -15,7 +15,7 @@ hexterm = 'H'.
 tab = CHR(9).
 eol = CHR(10).
 whitespace = CHR(13)+eol+tab+CHR(13).
-sign ='+'+'-'.
+sign = '+' + '-'.
 
 KEYWORDS
 
