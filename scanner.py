@@ -81,9 +81,9 @@ class Scanner:
                 s = self.mover(s, char)
                 token = self.getToken(s)
                 if(len(token) == 0):
-                    self.print.pprint("La cadena " + str(tokenDef) + " es un token invalido!")
+                    self.print.pprint("La cadena---" + str(tokenDef) + "---es un token invalido!")
                     break
-                self.print.pprint("La cadena " + str(tokenDef) + " es el token " + str(token))
+                self.print.pprint("La cadena----" + str(tokenDef) + "---es el token: " + str(token))
                 break
 
             char1 = self.cadenaALeer[cont]
@@ -98,19 +98,19 @@ class Scanner:
                 token = self.getToken(s)
                 # Si se encontro un token
                 if(len(token) == 0):
-                    self.print.pprint("La cadena " + tokenDef + " es un token invalido!")
+                    self.print.pprint("La cadena---" + tokenDef + "---es un token invalido!")
                     s = [0]
                     s2 = [0]
                     tokenDef = ""
                     cont -= 1
                 else:
-                    self.print.pprint("La cadena " + tokenDef + " es el token " + token)
+                    self.print.pprint("La cadena---" + tokenDef + "----es el token: " + token)
                     s = [0]
                     s2 = [0]
                     tokenDef = ""
             # Si no hay transicion
             elif(len(s) == 0):
-                self.print.pprint("La cadena " + tokenDef + " es un token invalido!")
+                self.print.pprint("La cadena---" + tokenDef + "---es un token invalido!")
                 s = [0]
                 s2 = [0]
                 tokenDef = ""
