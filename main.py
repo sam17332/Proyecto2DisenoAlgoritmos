@@ -17,14 +17,6 @@ class Main:
 
     def main(self):
         self.lectura()
-        # print("chr(39) " + str(chr(39)))
-        # print("chr(47) " + str(chr(47)))
-        # print("chr(67) " + str(chr(67)))
-        # print("chr(72) " + str(chr(72)))
-        # print("chr(82) " + str(chr(82)))
-        # print("chr(41) " + str(chr(41)))
-        # print("chr(40) " + str(chr(40)))
-        # print("chr(46) " + str(chr(46)))
 
         diccionarioCHR = self.json["CHARACTERS"]
         for char in self.characters:
@@ -75,6 +67,13 @@ class Main:
 
         directoInst = Directo(postfix)
         directoInst.arbolDirecto()
+
+#         f = open("scanner.py", "w", encoding="utf8")
+#         f.write(
+#             """
+# print("hola")
+#             """
+#         )
 
 
 
@@ -301,7 +300,7 @@ class Main:
             tipoChar.setTipo("STRING")
             valor = {ord(char)}
             tipoChar.setCharacter(valor)
-            tipoChar.setValor(ord(char))
+            tipoChar.setValor({ord(char)})
             diccionario[contador] = tipoChar
             contador += 1
             if(posiAct != tamanio-1):
@@ -340,32 +339,7 @@ class Main:
             for char in definicion:
                 if(char != " "):
                     keyInterno += char
-                    if(str(keyInterno) in self.characters):
-                        tipoChar = TipoChar()
-                        tipoChar.setTipo("CHARACTER")
-                        setChar = diccionarioCharacters[keyInterno]
-                        if(isinstance(diccionarioCharacters[keyInterno], set)):
-                            setChar = set(ord(str(char)) for char in diccionarioCharacters[keyInterno])
-                        tipoChar.setValor(setChar)
-                        tipoChar.setCharacter(keyInterno)
-                        nuevoDiccionarioToken[cont] = tipoChar
-                        cont += 1
-                        keyInterno = ""
-                        if(posicionActual != len(definicion)-1
-                            and definicion[posicionActual+1] != "."
-                            and definicion[posicionActual+1] != "|"
-                            and definicion[posicionActual+1] != "}"
-                            and definicion[posicionActual+1] != ")"
-                            and definicion[posicionActual+1] != "]"
-                            and (posicionActual+1 < finalLinea
-                            or finalLinea == 0)
-                        ):
-                            tipoChar = TipoChar()
-                            tipoChar.setTipo("APPEND")
-                            tipoChar.setValor(ord("."))
-                            nuevoDiccionarioToken[cont] = tipoChar
-                            cont += 1
-                    elif(char == '"' and esString2 == False):
+                    if(char == '"' and esString2 == False):
                         keyInterno = ""
                         if(esString1 == True):
                             nuevoDiccionarioToken, cont = self.leerString(stringConcat, nuevoDiccionarioToken, cont)
@@ -409,6 +383,31 @@ class Main:
                             esString2 = False
                         else:
                             esString2 = True
+                    elif(str(keyInterno) in self.characters):
+                        tipoChar = TipoChar()
+                        tipoChar.setTipo("CHARACTER")
+                        setChar = diccionarioCharacters[keyInterno]
+                        if(isinstance(diccionarioCharacters[keyInterno], set)):
+                            setChar = set(ord(str(char)) for char in diccionarioCharacters[keyInterno])
+                        tipoChar.setValor(setChar)
+                        tipoChar.setCharacter(keyInterno)
+                        nuevoDiccionarioToken[cont] = tipoChar
+                        cont += 1
+                        keyInterno = ""
+                        if(posicionActual != len(definicion)-1
+                            and definicion[posicionActual+1] != "."
+                            and definicion[posicionActual+1] != "|"
+                            and definicion[posicionActual+1] != "}"
+                            and definicion[posicionActual+1] != ")"
+                            and definicion[posicionActual+1] != "]"
+                            and (posicionActual+1 < finalLinea
+                            or finalLinea == 0)
+                        ):
+                            tipoChar = TipoChar()
+                            tipoChar.setTipo("APPEND")
+                            tipoChar.setValor(ord("."))
+                            nuevoDiccionarioToken[cont] = tipoChar
+                            cont += 1
                     elif(esString1 or esString2):
                         keyInterno = ""
                         stringConcat += char
