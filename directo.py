@@ -9,6 +9,7 @@ class Directo:
         self.lenguaje = []
         self.diccioFinal = {}
         self.diccioSiguientePos = {}
+        self.diccioAceptacion = {}
         self.contador1 = 1
         self.contador2 = 0
         self.pila = []
@@ -373,6 +374,18 @@ class Directo:
 
         dig.render("Automatas/Directo.gv", view=True)
 
+    def setToString(self, caracteres):
+        valor = ""
+        if(isinstance(caracteres, set)):
+            for char in caracteres:
+                valor += str(chr(int(char)))
+        elif(isinstance(caracteres, int)):
+            valor = str(chr(caracteres))
+        elif(isinstance(caracteres, str)):
+            valor = str(chr(int(caracteres)))
+
+        return valor
+
     """
     Función para obtener los diferentes id's de una letra
     """
@@ -484,7 +497,7 @@ class Directo:
                 self.pila.append(nodoEP)
 
             else:
-                if(char.getTipo() == "STRING" or char.getTipo() == "ACEP"):
+                if(char.getTipo() == "STRING" or char.getTipo() == "ACEP" or char.getTipo() == "CHARACTER"):
                     nodosAnulable = ""
                     nodosPrimeraPos = ""
                     nodosUltimaPos = ""
@@ -493,29 +506,9 @@ class Directo:
                     nodo.setChar(char.getCharacter())
                     nodo.setId(str(self.contador1))
 
-                    self.diccioSiguientePos[self.contador1] = []
                     # diccionario de aceptacion
-                    self.contador1 += 1
-
-                    nodosAnulable = [nodo]
-                    nodosPrimeraPos = [nodo]
-                    nodosUltimaPos = [nodo]
-
-                    nodo.setAnulable(self.esAnulable(nodosAnulable, char.getTipo()))
-                    nodo.setPrimeraPos(self.primeraPos(nodosPrimeraPos, char.getTipo()))
-                    nodo.setUltimaPos(self.ultimaPos(nodosUltimaPos, char.getTipo()))
-
-                    self.diccioFinal[self.contador2] = nodo
-                    self.contador2 += 1
-                    self.pila.append(nodo)
-                elif(char.getTipo() == "CHARACTER"):
-                    nodosAnulable = ""
-                    nodosPrimeraPos = ""
-                    nodosUltimaPos = ""
-
-                    nodo = NodoD()
-                    nodo.setChar(char.getCharacter())
-                    nodo.setId(str(self.contador1))
+                    if(char.getTipo() == "ACEP"):
+                        self.diccioAceptacion[self.contador1] = char.getCharacter()
 
                     self.diccioSiguientePos[self.contador1] = []
                     self.contador1 += 1
@@ -553,27 +546,30 @@ class Directo:
                         self.DestadosGlobal.append(array)
                         # setStr = self.setToString(letra.getValor())
                         # self.pilaFinal.append([cont, estado, setStr, array])
-                        self.pilaFinal.append([cont, estado, letra.getCharacter(), array])
+                        self.pilaFinal.append([cont, estado, letra.getValor(), array])
 
                     else:
                         if(len(estado) > 0):
                             # setStr = self.setToString(letra.getValor())
                             # self.pilaFinal.append([cont, estado, setStr, array])
-                            self.pilaFinal.append([cont, estado, letra.getCharacter(), array])
+                            self.pilaFinal.append([cont, estado, letra.getValor(), array])
 
-        pickle.dump(self.pilaFinal, open( "afd.p", "wb" ))
+        # Se guaran los diccionario necesarios para poder simular
 
-        self.graficar()
+        # Se guarda el AFD
+        file = open("pilaFinal", "wb")
+        pickle.dump(self.pilaFinal, file)
+        file.close()
+
+        # Se guarda la "tabla" de siguientepos
+        file = open("diccioSiguientePos", "wb")
+        pickle.dump(self.diccioSiguientePos, file)
+        file.close()
+
+        # Se guarda la "tabla" de aceptacion
+        file = open("diccioAceptacion", "wb")
+        pickle.dump(self.diccioAceptacion, file)
+        file.close()
+
+        # self.graficar()
         # self.simular()
-
-    def setToString(self, caracteres):
-        valor = ""
-        if(isinstance(caracteres, set)):
-            for char in caracteres:
-                valor += str(chr(int(char)))
-        elif(isinstance(caracteres, int)):
-            valor = str(chr(caracteres))
-        elif(isinstance(caracteres, str)):
-            valor = str(chr(int(caracteres)))
-
-        return valor
