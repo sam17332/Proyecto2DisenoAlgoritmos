@@ -561,11 +561,6 @@ class Directo:
         pickle.dump(self.pilaFinal, file)
         file.close()
 
-        # Se guarda la "tabla" de siguientepos
-        file = open("diccioSiguientePos", "wb")
-        pickle.dump(self.diccioSiguientePos, file)
-        file.close()
-
         # Se guarda la "tabla" de aceptacion
         file = open("diccioAceptacion", "wb")
         pickle.dump(self.diccioAceptacion, file)
