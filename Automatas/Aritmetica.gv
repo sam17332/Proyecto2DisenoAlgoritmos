@@ -1,0 +1,21 @@
+digraph {
+	rankdir=LR size=50
+	node [shape=doublecircle]
+	1
+	node [shape=doublecircle]
+	1
+	node [shape=doublecircle]
+	3
+	node [shape=doublecircle]
+	3
+	node [shape=circle]
+	0 -> 3 [label=letter]
+	node [shape=circle]
+	0 -> 1 [label=digit]
+	node [shape=circle]
+	1 -> 1 [label=digit]
+	node [shape=circle]
+	3 -> 3 [label=letter]
+	node [shape=circle]
+	3 -> 3 [label=digit]
+}

@@ -1,0 +1,101 @@
+digraph {
+	rankdir=LR size=50
+	node [shape=doublecircle]
+	1
+	node [shape=doublecircle]
+	1
+	node [shape=doublecircle]
+	1
+	node [shape=doublecircle]
+	1
+	node [shape=doublecircle]
+	1
+	node [shape=doublecircle]
+	1
+	node [shape=doublecircle]
+	3
+	node [shape=doublecircle]
+	3
+	node [shape=doublecircle]
+	3
+	node [shape=doublecircle]
+	3
+	node [shape=doublecircle]
+	3
+	node [shape=doublecircle]
+	3
+	node [shape=doublecircle]
+	6
+	node [shape=doublecircle]
+	6
+	node [shape=doublecircle]
+	6
+	node [shape=doublecircle]
+	6
+	node [shape=doublecircle]
+	6
+	node [shape=doublecircle]
+	6
+	node [shape=doublecircle]
+	7
+	node [shape=doublecircle]
+	7
+	node [shape=doublecircle]
+	7
+	node [shape=doublecircle]
+	7
+	node [shape=doublecircle]
+	7
+	node [shape=doublecircle]
+	7
+	node [shape=doublecircle]
+	7
+	node [shape=doublecircle]
+	7
+	node [shape=doublecircle]
+	7
+	node [shape=doublecircle]
+	7
+	node [shape=doublecircle]
+	7
+	node [shape=doublecircle]
+	7
+	node [shape=doublecircle]
+	8
+	node [shape=doublecircle]
+	8
+	node [shape=doublecircle]
+	8
+	node [shape=doublecircle]
+	8
+	node [shape=doublecircle]
+	8
+	node [shape=doublecircle]
+	8
+	node [shape=circle]
+	0 -> 8 [label=letter]
+	node [shape=circle]
+	0 -> 7 [label=digit]
+	node [shape=circle]
+	0 -> 5 [label=hexdigit]
+	node [shape=circle]
+	0 -> 2 [label=sign]
+	node [shape=circle]
+	0 -> 1 [label=whitespace]
+	node [shape=circle]
+	1 -> 1 [label=whitespace]
+	node [shape=circle]
+	2 -> 3 [label=digit]
+	node [shape=circle]
+	3 -> 3 [label=digit]
+	node [shape=circle]
+	5 -> 5 [label=hexdigit]
+	node [shape=circle]
+	5 -> 6 [label=hexterm]
+	node [shape=circle]
+	7 -> 7 [label=digit]
+	node [shape=circle]
+	8 -> 8 [label=letter]
+	node [shape=circle]
+	8 -> 8 [label=digit]
+}
