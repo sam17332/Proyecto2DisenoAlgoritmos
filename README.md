@@ -47,7 +47,7 @@ Generador de analizadores léxicos
 10. lecturaCoCoL.txt:archivo de texto para probar al correr el scanner.py generado a partir de CoCoL.ATG
 11. lecturaDouble.txt:archivo de texto para probar al correr el scanner.py generado a partir de Double.ATG
 12. Automatas: Carpeta donde se encuentra un pdf, para visualizar el AFD, para cada gramatica.
-10. cocols: Carpeta donde se encuentras las diferentes gramaticas que se pueden escoger al ejecutar main.py
+13. cocols: Carpeta donde se encuentras las diferentes gramaticas que se pueden escoger al ejecutar main.py
 
 ## Link Youtube
 #### Video que explica todo el programa y las funciones:
