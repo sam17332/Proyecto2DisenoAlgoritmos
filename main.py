@@ -680,7 +680,6 @@ def menu():
     # nombre = "Aritmetica.ATG"
     # nombre = "CoCoL.ATG"
     # nombre = "Double.ATG"
-    # nombre = "cocol2.cfg"
 
     main = Main(nombre)
     main.main()
