@@ -1,0 +1,7 @@
+aba a9aa _ "a9."
+'/a' CHR(19) 'asdasda'
+CHR(19)..CHR(156)
+!?  (..) "asas09kasd" '
+"asa sdqwd"
+CHR(7)..CHR(45
+CHR(90) CHR(255)

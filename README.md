@@ -42,8 +42,11 @@ Generador de analizadores léxicos
 5. tipoChar.py: Clase con las variables necesarias para poder guardar los caracteres o characters que tiene cada token.
 6. postfix.py: Programa que contiene las funciones necesariasmpara pasar a postfix lo tokens leídos en main.py.
 7. scanner.py: Programa generado a partir del main.py para obtener los tokens que encuentra en el txt dependiendo de la gramatica ingresada.
-8. lectura.txt: archivo de texto para probar al correr el scanner.py
-9. Automatas: Carpeta donde se encuentra un pdf, para visualizar el AFD, para cada gramatica.
+8. lecturaHex.txt: archivo de texto para probar al correr el scanner.py generado a partir de HexNumber.ATG
+9. lecturaAritmetica.txt: archivo de texto para probar al correr el scanner.py generado a partir de Aritmetica.ATG
+10. lecturaCoCoL.txt:archivo de texto para probar al correr el scanner.py generado a partir de CoCoL.ATG
+11. lecturaDouble.txt:archivo de texto para probar al correr el scanner.py generado a partir de Double.ATG
+12. Automatas: Carpeta donde se encuentra un pdf, para visualizar el AFD, para cada gramatica.
 10. cocols: Carpeta donde se encuentras las diferentes gramaticas que se pueden escoger al ejecutar main.py
 
 ## Link Youtube
