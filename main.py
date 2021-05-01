@@ -18,10 +18,10 @@ class Main:
     def main(self):
         self.lectura()
 
+        # Convertir strings a sets
         diccionarioCHR = self.json["CHARACTERS"]
         for char in self.characters:
             valor = diccionarioCHR[char]
-
             if(isinstance(valor, str)):
                 funciones = Funciones()
                 valor = funciones.getStringInQuotes(valor)
@@ -34,14 +34,19 @@ class Main:
                 valor = set(valor)
                 diccionarioCHR[char] = valor
 
-        self.construccionTokens()
+        print("----------------------------------------------------------------------------------------------------")
+        print("------------------------------------------------JSON------------------------------------------------")
+        print("----------------------------------------------------------------------------------------------------")
+        self.print.pprint(self.json)
+        print()
+        print()
+        print()
 
-        # self.print.pprint(self.json)
-        # print(self.json)
+        self.construccionTokens()
 
         tokensLen = len(self.json["TOKENS"])
 
-        # Se crea un array con todos los tokens
+        # Se crea un array con todos los tokens separando cada token por un "OR"
         arrayAcumuladoTokens = []
         cont = 0
         for key1, definicion in self.json["TOKENS"].items():
@@ -57,13 +62,18 @@ class Main:
         postfixInst = Postfix()
         postfix = postfixInst.toPostfix(arrayAcumuladoTokens)
         cont = 0
-        # for token in postfix:
-        #     print(cont)
-        #     print(token.getTipoChar())
-        #     print(type(token.getValor()))
-        #     print()
-        #     cont +=1
-        # print()
+        print("-----------------------------------------------------------------------------------------------------")
+        print("-----------------------------------------------POSTFIX-----------------------------------------------")
+        print("-----------------------------------------------------------------------------------------------------")
+        for token in postfix:
+            print(cont)
+            print(token.getTipoChar())
+            print(type(token.getValor()))
+            print()
+            cont +=1
+        print()
+        print()
+        print()
 
         directoInst = Directo(postfix)
         directoInst.arbolDirecto()
@@ -145,8 +155,6 @@ class Main:
                         strChars = ""
                         for char in range(0, 256):
                             strChars += chr(char)
-                        # setChars = str(set(chr(char) for char in range (0, 255)))
-                        # setChars = setChars.replace(" ", "")
                         resultado = resultado.replace("ANY", strChars)
 
                     # Si hay un CHR
@@ -332,6 +340,7 @@ class Main:
             for char in definicion:
                 if(char != " "):
                     keyInterno += char
+
                     if(char == '"' and esString2 == False):
                         keyInterno = ""
                         if(esString1 == True):
@@ -531,14 +540,19 @@ class Main:
             nuevoDiccionarioToken[cont] = tipoChar
             cont += 1
             diccionarioToken[key] = nuevoDiccionarioToken
-            # print(key)
-            # for id, tipo in nuevoDiccionarioToken.items():
-            #     print(id)
-            #     print(tipo.getTipoChar())
-            #     print(type(tipo.getValor()))
-            # print()
-            # print()
-        # print(diccionarioToken)
+
+            print("----------------------------------------------------------------------------------------------------")
+            print("-----------------------------------------------Tokens-----------------------------------------------")
+            print("----------------------------------------------------------------------------------------------------")
+            print(key)
+            print(diccionarioToken[key])
+            for id, tipo in diccionarioToken[key].items():
+                print(id)
+                print(tipo.getTipoChar())
+                print(type(tipo.getValor()))
+            print()
+            print()
+            print()
 
     def escribirScanner(self):
         f = open("scanner.py", "w", encoding="utf8")
@@ -569,9 +583,24 @@ class Scanner:
         self.pilaFinal = pickle.load(file)
         file.close()
 
+        print("----------------------------------------------------------------------------------------------------")
+        print("------------------------------------------------AFD-------------------------------------------------")
+        print("----------------------------------------------------------------------------------------------------")
+        print(self.pilaFinal)
+        print()
+        print()
+        print()
+
         file = open("diccioAceptacion", "rb")
         self.diccioAceptacion = pickle.load(file)
         file.close()
+        print("----------------------------------------------------------------------------------------------------")
+        print("---------------------------------------------ACEPTACION---------------------------------------------")
+        print("----------------------------------------------------------------------------------------------------")
+        print(self.diccioAceptacion)
+        print()
+        print()
+        print()
 
     def getStateNumber(self, array):
         for valor in self.pilaFinal:
@@ -628,7 +657,7 @@ class Scanner:
                 if(len(token) == 0):
                     self.print.pprint("La cadena ---" + str(tokenDef) + "--- es un token invalido!")
                     break
-                self.print.pprint("El token es: " + str(token) " para la cadena: " + str(tokenDef))
+                self.print.pprint("El token es: --" + str(token) + "-- para la cadena: " + str(tokenDef))
                 break
 
             char1 = self.cadenaALeer[cont]
@@ -649,7 +678,7 @@ class Scanner:
                     tokenDef = ""
                     cont -= 1
                 else:
-                    self.print.pprint("El token es: " + str(token) " para la cadena: " + str(tokenDef))
+                    self.print.pprint("El token es: --" + str(token) + "-- para la cadena: " + str(tokenDef))
                     s = [0]
                     s2 = [0]
                     tokenDef = ""
@@ -676,10 +705,6 @@ menu()
 
 def menu():
     nombre = str(input("Ingrese el nombre del archivo Cocol que desea leer: "))
-    # nombre = "HexNumber.ATG"
-    # nombre = "Aritmetica.ATG"
-    # nombre = "CoCoL.ATG"
-    # nombre = "Double.ATG"
 
     main = Main(nombre)
     main.main()
