@@ -46,6 +46,7 @@
 
 ## Link Youtube
 #### Video que explica todo el programa y las funciones:
+https://youtu.be/_8sOOJ5O9qE
 
 ## Orden de como correr el proyecto
 
