@@ -1,6 +1,5 @@
 <h1 align="center">
-<br>
-Generador de analizadores léxicos
+  Generador de analizadores léxicos
 </h1>
 
 <p align="center">Universidad del Valle de Guatemala</p>
@@ -15,20 +14,16 @@ Generador de analizadores léxicos
 
 <h4>El proyecto consiste en la implementación de un generador de analizadores léxicos, tomando como base un subconjunto de las características de COCOr. El programa aceptará como entrada un archivo en COCOl, con la especificación del analizador léxico a generar, y dará como salida un archivo fuente, el cual implementará el scanner basado en la gramática ingresada.<h4>
 
-# Descripción de herramientas  y archivos archivos
+# Descripción de herramientas  y archivos
 
 ## Listado de herramientas usadas para el proyecto
 
-- Python 3.8.0 64bits
-- Visual Studio Code
-- Una terminal
-
-## Liberías Necesarias
-
 - Python 3.8.0
   - Una versión de Python igual o mayor a Python 3.6.0 64bits
+- Graphviz
+  - Es una librería que permite graficar los nodos. [link de descarga](https://graphviz.org/download/)
 - pickle
-  - Libreria para serializar objetos. [link de documentaciǿn](https://docs.python.org/3/library/pickle.html)
+  - Libreria para serializar objetos. [link de documentación](https://docs.python.org/3/library/pickle.html)
 - pprint
   - Libreria para imprimir y mostrar los caracteres especiales
 - Terminal
@@ -44,8 +39,8 @@ Generador de analizadores léxicos
 7. scanner.py: Programa generado a partir del main.py para obtener los tokens que encuentra en el txt dependiendo de la gramatica ingresada.
 8. lecturaHex.txt: archivo de texto para probar al correr el scanner.py generado a partir de HexNumber.ATG
 9. lecturaAritmetica.txt: archivo de texto para probar al correr el scanner.py generado a partir de Aritmetica.ATG
-10. lecturaCoCoL.txt:archivo de texto para probar al correr el scanner.py generado a partir de CoCoL.ATG
-11. lecturaDouble.txt:archivo de texto para probar al correr el scanner.py generado a partir de Double.ATG
+10. lecturaCoCoL.txt: archivo de texto para probar al correr el scanner.py generado a partir de CoCoL.ATG
+11. lecturaDouble.txt: archivo de texto para probar al correr el scanner.py generado a partir de Double.ATG
 12. Automatas: Carpeta donde se encuentra un pdf, para visualizar el AFD, para cada gramatica.
 13. cocols: Carpeta donde se encuentras las diferentes gramaticas que se pueden escoger al ejecutar main.py
 
